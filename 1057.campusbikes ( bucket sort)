@@ -1,0 +1,40 @@
+// this is bucket sort solution
+class Solution {
+public:
+    vector<int> assignBikes(vector<vector<int>>& workers, vector<vector<int>>& bikes) {
+        std::vector<std::vector<std::pair<int,int>>> d(2001);
+        std::vector<int> res(workers.size(), INT_MAX);
+        std::unordered_set<int> usedBikes;
+        int i = 0;
+        for (auto w : workers) {
+            int j = 0;
+            for (auto b : bikes) {
+                d[md(w.front(), w.back(), b.front(), b.back())].push_back(make_pair(i, j));
+                j++;
+            }
+            i++;
+        }
+        for (auto& dis : d) {
+          std::sort(dis.begin(), dis.end());
+        }
+        i = 0;
+        for (auto dis : d) {                
+            if (dis.empty()) { i++ ; continue; }
+            for (auto wb : dis ) {
+                if (usedBikes.count(wb.second)) continue;
+                if (res[wb.first] != INT_MAX) continue;
+                res[wb.first]  = wb.second;
+                usedBikes.insert(wb.second);                
+            } 
+            i++;                       
+        }
+        return res;                
+    }
+
+
+private:
+    std::unordered_set<int> usedBikes;
+    int md(int wi, int wj, int bi, int bj) {
+        return (abs(wi - bi) + abs(wj-bj));
+    }        
+ };
